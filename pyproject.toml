@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "adversarial_worldmodel_bomberman"
+version = "0.1.0"
+description = "Adversarial world model bomberman"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+opencv-python = "^4.5.5"
+gym = "^0.23.1"
+matplotlib = "^3.5.1"
+torch = "^1.11.0"
+torchvision = "^0.12.0"
+tensorboard = "^2.8.0"
+
+[tool.poetry.dev-dependencies]
+jupyterlab = "^3.3.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
