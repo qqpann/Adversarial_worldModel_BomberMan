@@ -55,7 +55,7 @@ chip_bomb_on_enemy = cv2.imread(path + "/assets/bomonenemy.jpg")
 
 
 class Env(gym.Env):
-    def __init__(self, logDisp=False):
+    def __init__(self, debug=False):
         self.reset()
         # 以下gym用
         self.action_space = gym.spaces.Discrete(6)
@@ -66,7 +66,7 @@ class Env(gym.Env):
             (1, board_x_size, board_y_size)
         )
         self.observation_space = gym.spaces.Box(low=LOW, high=HIGH)
-        self.logDisp = logDisp
+        self.debug = debug
 
     def reset(self):
         self.isFin = False
@@ -130,7 +130,7 @@ class Env(gym.Env):
     # キャラの移動処理
     def move(self, pid, direction):
         p = np.add(self.players[pid].pos, V[direction])
-        if self.logDisp:
+        if self.debug:
             print(f"{pid}は{p}に移動")
         if isInBoard(p):
             # 空白の時のみ移動可能
@@ -145,7 +145,7 @@ class Env(gym.Env):
 
     # 壁など衝突 ToDo:減点処理...?
     def on_collision(self, pid):
-        if self.logDisp:
+        if self.debug:
             print(f"{pid}:ごつん")
         self.players[pid].scoring(ON_INVALID_ACTION)
 
@@ -157,7 +157,7 @@ class Env(gym.Env):
             or self.players[pid].setBomb >= self.players[pid].bombMax
         ):
             # ToDo:減点処理...?
-            if self.logDisp:
+            if self.debug:
                 print(f"pid:{pid}は爆弾が置けない")
             self.players[pid].scoring(ON_INVALID_ACTION)
             return
@@ -180,7 +180,7 @@ class Env(gym.Env):
     # 爆弾爆発処理
     def bomb_dmg(self, bomId):
         pos = self.bombs[bomId].pos
-        if self.logDisp:
+        if self.debug:
             print(f"{pos}で{self.bombs[bomId].who}の爆弾が長さ{self.bombs[bomId].len}で爆発")
         # 爆弾を置いた人が置けるようにする
         self.players[self.bombs[bomId].who].setBomb -= 1
@@ -199,7 +199,7 @@ class Env(gym.Env):
     # 爆発後の地形変化 1を返すとき爆発がそこで止まることを示している
     def explode_check(self, p, bomId):
         whosBom = self.bombs[bomId].who
-        if self.logDisp:
+        if self.debug:
             print(f"{p}は{self.board[pos2v(p)]}")
         # 破壊不能の場合終了
         if int(self.board[pos2v(p)]) == 1:
@@ -221,7 +221,7 @@ class Env(gym.Env):
             damagedPid = int(self.board[pos2v(p)]) % 10
             self.players[damagedPid].dmg()
 
-            if self.logDisp:
+            if self.debug:
                 print(f"{damagedPid}が被弾")
 
             # 爆弾を当てたrewardと被弾reward
