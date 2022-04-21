@@ -77,6 +77,7 @@ class Env(gym.Env):
         self.boardHistory = []
         self.reset_board()
         self.boardHistory.append(copy.deepcopy(self.board))
+        self.distance_t0 = -999.0
         return self.observations()
 
     # 盤面リセット
@@ -238,7 +239,6 @@ class Env(gym.Env):
 
             return 0
 
-    distance_t0 = -999.0
     # 相手に向かっているときボーナス
     def close_bonus(self):
         distance_t1 = np.linalg.norm(self.players[0].pos - self.players[1].pos)
