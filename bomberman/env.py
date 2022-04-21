@@ -75,12 +75,12 @@ class Env(gym.Env):
         self.players = [Player(i) for i in range(player_count)]
         self.bombs = [Bomb() for i in range(MAXBOMBS)]
         self.boardHistory = []
-        self.resetBoard()
+        self.reset_board()
         self.boardHistory.append(copy.deepcopy(self.board))
         return self.observations()
 
     # 盤面リセット
-    def resetBoard(self):
+    def reset_board(self):
         # 盤面初期化
         self.board = np.zeros([board_x_size, board_y_size])
 
@@ -102,11 +102,11 @@ class Env(gym.Env):
             self.board[pos2v(init_pos[i])] = 10 + i
             self.players[i]._changePos(pos=init_pos[i])
 
-        self.setBrick(brickCount)
+        self.init_brick(brickCount)
 
     # レンガ配置
     # プレイヤーの上下左右1マスは設置不可
-    def setBrick(self, cnt):
+    def init_brick(self, cnt):
         unsettable = []
         for player in self.players:
             for v in V:
@@ -138,18 +138,18 @@ class Env(gym.Env):
                 self.board[pos2v(p)] += pid + 10
                 self.players[pid]._changePos(p)
             else:
-                self.onCollision(pid)
+                self.on_collision(pid)
         else:
-            self.onCollision(pid)
+            self.on_collision(pid)
 
     # 壁など衝突 ToDo:減点処理...?
-    def onCollision(self, pid):
+    def on_collision(self, pid):
         if self.logDisp:
             print(f"{pid}:ごつん")
         self.players[pid].scoring(ON_INVALID_ACTION)
 
     # 爆弾セット
-    def bombSet(self, pid, pos):
+    def bomb_set(self, pid, pos):
         # 爆弾がすでにあるかおける上限を超えたとき処理をスキップ
         if (
             self.board[pos2v(pos)] >= 100
@@ -168,16 +168,16 @@ class Env(gym.Env):
                 break
 
     # 爆弾tick
-    def bombTick(self):
+    def bomb_tick(self):
         for i in range(MAXBOMBS):
             if self.bombs[i].isActive:
                 self.bombs[i].timer -= 1
                 if self.bombs[i].timer <= 0:
-                    self.bombDmg(i)
+                    self.bomb_dmg(i)
                     self.bombs[i].__init__()
 
     # 爆弾爆発処理
-    def bombDmg(self, bomId):
+    def bomb_dmg(self, bomId):
         pos = self.bombs[bomId].pos
         if self.logDisp:
             print(f"{pos}で{self.bombs[bomId].who}の爆弾が長さ{self.bombs[bomId].len}で爆発")
@@ -185,18 +185,18 @@ class Env(gym.Env):
         self.players[self.bombs[bomId].who].setBomb -= 1
         # 爆発跡地
         self.board[pos2v(pos)] -= 100
-        self.exploseCheck(pos, bomId)
+        self.explode_check(pos, bomId)
         for v in V:
             for i in range(1, self.bombs[bomId].len):
                 p = np.add(pos, v * i)
                 if isInBoard(p):
-                    if self.exploseCheck(p, bomId) == 1:
+                    if self.explode_check(p, bomId) == 1:
                         break
                 else:
                     break
 
     # 爆発後の地形変化 1を返すとき爆発がそこで止まることを示している
-    def exploseCheck(self, p, bomId):
+    def explode_check(self, p, bomId):
         whosBom = self.bombs[bomId].who
         if self.logDisp:
             print(f"{p}は{self.board[pos2v(p)]}")
@@ -240,7 +240,7 @@ class Env(gym.Env):
 
     distance_t0 = -999.0
     # 相手に向かっているときボーナス
-    def closeBonus(self):
+    def close_bonus(self):
         distance_t1 = np.linalg.norm(self.players[0].pos - self.players[1].pos)
         if self.distance_t0 > distance_t1:
             for pid in range(player_count):
@@ -272,7 +272,7 @@ class Env(gym.Env):
 
         return board
 
-    def renderForHuman(self, pid, board=None):
+    def render_for_human(self, pid, board=None):
         b = self.board
         if type(board) != type(None):
             b = board
@@ -301,12 +301,12 @@ class Env(gym.Env):
         img = cv2.hconcat(img)
         return img
 
-    def renderToGif(self, pid=0, path="play"):
+    def render_to_gif(self, pid=0, path="play"):
         images = []
         for board in self.boardHistory:
             images.append(
                 Image.fromarray(
-                    cv2.pyrUp(self.renderForHuman(pid=pid, board=board)), mode="RGB"
+                    cv2.pyrUp(self.render_for_human(pid=pid, board=board)), mode="RGB"
                 )
             )
         images[0].save(
@@ -345,12 +345,12 @@ class Env(gym.Env):
             if 1 <= action and action <= 4:
                 self.move(pid, action - 1)
             elif action == 5:
-                self.bombSet(pid, self.players[pid].pos)
+                self.bomb_set(pid, self.players[pid].pos)
 
         if not self.isFin:
-            self.bombTick()
+            self.bomb_tick()
             self.boardHistory.append(copy.deepcopy(self.board))
-            self.closeBonus()
+            self.close_bonus()
             if sum(self.playableId) <= 1:
                 self.isFin = True
         # 生存スコア計算
