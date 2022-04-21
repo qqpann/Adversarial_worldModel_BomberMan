@@ -16,7 +16,7 @@ player_count = 2
 # 行動可能なアクションの数
 n_actions = 6
 # 最初においてあるレンガの数
-brickCount = 2  # boardXsize * boardYsize - 58
+brickCount = 0
 # ゲームクラスのデバッグ用
 logDisp = False
 # 各modelの可視化用

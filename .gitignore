@@ -1,5 +1,5 @@
 .vscode
-*.gif
+/*.gif
 *.pickle
 
 # Byte-compiled / optimized / DLL files
