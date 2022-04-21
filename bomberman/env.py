@@ -59,11 +59,11 @@ class Env(gym.Env):
         self.reset()
         # 以下gym用
         self.action_space = gym.spaces.Discrete(6)
-        LOW = np.array([0 for i in range(boardXsize * boardYsize)]).reshape(
-            1, boardXsize, boardYsize
+        LOW = np.array([0] * (boardXsize * boardYsize)).reshape(
+            (1, boardXsize, boardYsize)
         )
-        HIGH = np.array([1 for i in range(boardXsize * boardYsize)]).reshape(
-            1, boardXsize, boardYsize
+        HIGH = np.array([1] * (boardXsize * boardYsize)).reshape(
+            (1, boardXsize, boardYsize)
         )
         self.observation_space = gym.spaces.Box(low=LOW, high=HIGH)
         self.logDisp = logDisp
