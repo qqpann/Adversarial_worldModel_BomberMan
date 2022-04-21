@@ -4,8 +4,8 @@ import numpy as np
 # ゲーム情報定義
 # ------------
 # フィールドのサイズ定義　両方奇数である前提で行っている
-boardXsize = 13
-boardYsize = 11
+board_x_size = 13
+board_y_size = 11
 # フィールドにおける爆弾の合計の上限数
 MAXBOMBS = 20
 ITEMS = 3
@@ -20,7 +20,7 @@ logDisp = False
 # 各modelの可視化用
 dummyCheck = True
 
-assert boardXsize % 2 == 1 and boardYsize % 2 == 1
+assert board_x_size % 2 == 1 and board_y_size % 2 == 1
 assert player_count == 2
 
 # 報酬設定
@@ -47,7 +47,7 @@ ON_ALIVE = 0
 
 # マップ用画像読み込み
 pix_size = 1
-windowXsize = boardXsize * pix_size
-windowYsize = boardYsize * pix_size
+window_x_size = board_x_size * pix_size
+window_y_size = board_y_size * pix_size
 
 V = np.array([[0, -1], [0, 1], [1, 0], [-1, 0]])

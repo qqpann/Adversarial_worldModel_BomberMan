@@ -32,13 +32,13 @@ from bomberman.common.variables import (
     ON_LOSE,
     ON_WIN,
     V,
-    boardXsize,
-    boardYsize,
+    board_x_size,
+    board_y_size,
     brickCount,
     n_actions,
     player_count,
-    windowXsize,
-    windowYsize,
+    window_x_size,
+    window_y_size,
 )
 from bomberman.obj import Bomb, Player
 
@@ -59,11 +59,11 @@ class Env(gym.Env):
         self.reset()
         # 以下gym用
         self.action_space = gym.spaces.Discrete(6)
-        LOW = np.array([0] * (boardXsize * boardYsize)).reshape(
-            (1, boardXsize, boardYsize)
+        LOW = np.array([0] * (board_x_size * board_y_size)).reshape(
+            (1, board_x_size, board_y_size)
         )
-        HIGH = np.array([1] * (boardXsize * boardYsize)).reshape(
-            (1, boardXsize, boardYsize)
+        HIGH = np.array([1] * (board_x_size * board_y_size)).reshape(
+            (1, board_x_size, board_y_size)
         )
         self.observation_space = gym.spaces.Box(low=LOW, high=HIGH)
         self.logDisp = logDisp
@@ -82,20 +82,20 @@ class Env(gym.Env):
     # 盤面リセット
     def resetBoard(self):
         # 盤面初期化
-        self.board = np.zeros([boardXsize, boardYsize])
+        self.board = np.zeros([board_x_size, board_y_size])
 
         # 破壊不可オブジェクト配置
-        for x in range(1, boardXsize, 2):
-            for y in range(1, boardYsize, 2):
+        for x in range(1, board_x_size, 2):
+            for y in range(1, board_y_size, 2):
                 self.board[x, y] = 1
 
         # プレイヤー初期位置定義
         init_pos = np.array(
             [
                 [0, 0],
-                [boardXsize - 1, boardYsize - 1],
-                [0, boardYsize - 1],
-                [boardXsize - 1, 0],
+                [board_x_size - 1, board_y_size - 1],
+                [0, board_y_size - 1],
+                [board_x_size - 1, 0],
             ]
         )
         for i in range(player_count):
@@ -251,8 +251,8 @@ class Env(gym.Env):
     # 出力
     def render(self, pid):
         board = copy.deepcopy(self.board)
-        for x in range(boardXsize):
-            for y in range(boardYsize):
+        for x in range(board_x_size):
+            for y in range(board_y_size):
                 chip = int(board[x, y])
                 if 10 <= chip and chip < 100:
                     if chip == pid + 10:
@@ -277,9 +277,9 @@ class Env(gym.Env):
         if type(board) != type(None):
             b = board
         img = []
-        for x in range(boardXsize):
+        for x in range(board_x_size):
             img_x = []
-            for y in range(boardYsize):
+            for y in range(board_y_size):
                 if b[x, y] == 0:
                     img_x.append(chip_none)
                 elif b[x, y] == 1:
@@ -327,7 +327,9 @@ class Env(gym.Env):
         rets = []
         for pid in range(player_count):
             rets.append(
-                torch.Tensor(self.render(pid=pid).reshape(1, windowXsize, windowYsize))
+                torch.Tensor(
+                    self.render(pid=pid).reshape(1, window_x_size, window_y_size)
+                )
             )
         return rets
 

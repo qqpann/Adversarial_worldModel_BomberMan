@@ -18,4 +18,4 @@ import torch.utils as utils
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 
-from bomberman.common.variables import boardXsize, boardYsize
+from bomberman.common.variables import board_x_size, board_y_size

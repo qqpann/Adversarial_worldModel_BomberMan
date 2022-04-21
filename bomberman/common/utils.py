@@ -1,6 +1,6 @@
 import numpy as np
 
-from .variables import boardXsize, boardYsize
+from .variables import board_x_size, board_y_size
 
 
 # パラメータ、便利関数
@@ -14,7 +14,7 @@ def nearInt(val):
 
 
 def isInBoard(p):
-    if 0 <= p[0] and p[0] < boardXsize and 0 <= p[1] and p[1] < boardYsize:
+    if 0 <= p[0] and p[0] < board_x_size and 0 <= p[1] and p[1] < board_y_size:
         return True
     else:
         return False
