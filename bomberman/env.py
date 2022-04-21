@@ -20,17 +20,17 @@ from torch.utils.tensorboard import SummaryWriter
 
 from bomberman.common.utils import isInBoard, pos2v, rand_ints_nodup
 from bomberman.common.variables import (
-    ALLIVE,
-    CLOSEBONUS,
-    INVALID_ACTION_PENALTY,
     ITEMS,
-    LOSE,
     MAXBOMBS,
-    ONBOMHIT,
-    ONBOMHITTED,
-    ONBOMSELF,
-    ONBREAKBRICK,
-    WIN,
+    ON_ALIVE,
+    ON_BOM_HIT,
+    ON_BOM_HIT_BY,
+    ON_BOM_SELF,
+    ON_BREAK_BRICK,
+    ON_CLOSE_GAP,
+    ON_INVALID_ACTION,
+    ON_LOSE,
+    ON_WIN,
     V,
     boardXsize,
     boardYsize,
@@ -146,7 +146,7 @@ class Env(gym.Env):
     def onCollision(self, pid):
         if self.logDisp:
             print(f"{pid}:ごつん")
-        self.players[pid].scoring(INVALID_ACTION_PENALTY)
+        self.players[pid].scoring(ON_INVALID_ACTION)
 
     # 爆弾セット
     def bombSet(self, pid, pos):
@@ -158,7 +158,7 @@ class Env(gym.Env):
             # ToDo:減点処理...?
             if self.logDisp:
                 print(f"pid:{pid}は爆弾が置けない")
-            self.players[pid].scoring(INVALID_ACTION_PENALTY)
+            self.players[pid].scoring(ON_INVALID_ACTION)
             return
         for i in range(MAXBOMBS):
             if not self.bombs[i].isActive:
@@ -206,7 +206,7 @@ class Env(gym.Env):
         # レンガの場合レンガを破壊して終了
         elif int(self.board[pos2v(p)]) == 2:
             self.board[pos2v(p)] = 0
-            self.players[whosBom].scoring(ONBREAKBRICK)
+            self.players[whosBom].scoring(ON_BREAK_BRICK)
             return 1
         # 爆弾の場合次のtickに連鎖爆発
         elif int(self.board[pos2v(p)]) >= 100:
@@ -225,16 +225,16 @@ class Env(gym.Env):
 
             # 爆弾を当てたrewardと被弾reward
             if whosBom != damagedPid:
-                self.players[whosBom].scoring(ONBOMHIT)
-                self.players[damagedPid].scoring(ONBOMHITTED)
+                self.players[whosBom].scoring(ON_BOM_HIT)
+                self.players[damagedPid].scoring(ON_BOM_HIT_BY)
             else:
-                self.players[damagedPid].scoring(ONBOMSELF)
+                self.players[damagedPid].scoring(ON_BOM_SELF)
 
             if not self.players[damagedPid].isSurvive():
                 self.playableId[damagedPid] = 0
-                self.players[damagedPid].scoring(LOSE)
+                self.players[damagedPid].scoring(ON_LOSE)
                 if whosBom != damagedPid:
-                    self.players[whosBom].scoring(WIN)
+                    self.players[whosBom].scoring(ON_WIN)
 
             return 0
 
@@ -245,7 +245,7 @@ class Env(gym.Env):
         if self.distance_t0 > distance_t1:
             for pid in range(player_count):
                 if 1 <= self.actions[pid] and self.actions[pid] <= 4:
-                    self.players[pid].scoring(CLOSEBONUS)
+                    self.players[pid].scoring(ON_CLOSE_GAP)
         self.distance_t0 = distance_t1
 
     # 出力
@@ -354,8 +354,8 @@ class Env(gym.Env):
         # 生存スコア計算
         for pid in range(player_count):
             if self.actions[pid] != 0:
-                self.players[pid].scoring(ALLIVE)
+                self.players[pid].scoring(ON_ALIVE)
             else:
-                self.players[pid].scoring(INVALID_ACTION_PENALTY)
+                self.players[pid].scoring(ON_INVALID_ACTION)
 
         return self.observations(), self.rewards(), self.isFin, {}
