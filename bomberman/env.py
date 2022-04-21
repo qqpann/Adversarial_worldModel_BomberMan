@@ -43,7 +43,7 @@ from bomberman.common.variables import (
 from bomberman.obj import Bomb, Player
 
 # 人間の目に優しいように
-path = "../.."
+path = "."
 chip_none = cv2.imread(path + "/assets/none.jpg")
 chip_block = cv2.imread(path + "/assets/block.jpg")
 chip_bomb = cv2.imread(path + "/assets/bom.jpg")
