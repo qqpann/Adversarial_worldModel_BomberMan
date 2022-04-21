@@ -6,8 +6,8 @@ import numpy as np
 # フィールドのサイズ定義　両方奇数である前提で行っている
 # board_x_size = 13
 # board_y_size = 11
-board_x_size = 9
-board_y_size = 9
+board_x_size = 7
+board_y_size = 7
 # フィールドにおける爆弾の合計の上限数
 MAXBOMBS = 20
 ITEMS = 3

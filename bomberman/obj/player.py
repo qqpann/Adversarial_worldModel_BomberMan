@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Player:
-    def __init__(self, id=0, debug=False):
+    def __init__(self, id: int, debug=False):
         self.id = id
         self.life = 1
         self.pos = np.array([0, 0])
