@@ -1,6 +1,16 @@
 import numpy as np
+import torch
 
 from .variables import board_x_size, board_y_size
+
+
+def init_device():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        torch.set_default_tensor_type("torch.cuda.FloatTensor")
+    else:
+        torch.set_default_tensor_type("torch.FloatTensor")
+    return device
 
 
 # パラメータ、便利関数
