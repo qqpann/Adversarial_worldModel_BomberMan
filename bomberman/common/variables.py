@@ -4,8 +4,10 @@ import numpy as np
 # ゲーム情報定義
 # ------------
 # フィールドのサイズ定義　両方奇数である前提で行っている
-board_x_size = 13
-board_y_size = 11
+# board_x_size = 13
+# board_y_size = 11
+board_x_size = 9
+board_y_size = 9
 # フィールドにおける爆弾の合計の上限数
 MAXBOMBS = 20
 ITEMS = 3
@@ -14,7 +16,7 @@ player_count = 2
 # 行動可能なアクションの数
 n_actions = 6
 # 最初においてあるレンガの数
-brickCount = 20  # boardXsize * boardYsize - 58
+brickCount = 2  # boardXsize * boardYsize - 58
 # ゲームクラスのデバッグ用
 logDisp = False
 # 各modelの可視化用
